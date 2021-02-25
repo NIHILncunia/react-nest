@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Form, Header, Label, Input, Button, LinkContainer, Error, Success } from './style';
+import { Form, Header, Label, Input, Button, LinkContainer, Error, Success } from '@pages/SignUp/style';
 // 스타일드 컴포넌트는 다른 파일로 빼두는 게 좋다. 코드량이 많아지기 때문이다.
 import useInput from '@hooks/useInput';
 // 커스텀 훅을 만들어 사용하면 중복을 줄일 수 있다.
@@ -13,7 +13,7 @@ import fetcher from '@utils/fetcher';
 // 라우터에서 링크 컴포넌트를 지원한다.
 
 const Signup = () => {
-  const { data, error, revalidate, mutate, } = useSWR('http://localhost:3095/api/users', fetcher, {
+  const { data, revalidate, } = useSWR('http://localhost:3095/api/users', fetcher, {
     dedupingInterval: 100000,
   });
   
@@ -50,12 +50,12 @@ const Signup = () => {
           nickname,
           password,
         })
-        .then((response) => {
-          mutate(response.data, false);
+        .then(() => {
+          revalidate();
           setSignUpSuccess(true);
         })
         .catch((error) => {
-          setSignUpError(error.response?.data?.statusCode === 403);
+          setSignUpError(error.response?.statusCode === 403);
         });
     }
   }, [ email, nickname, password, mismatchError, ]);
@@ -65,7 +65,7 @@ const Signup = () => {
   }
 
   if (data) {
-    return <Redirect to='/workspace/channel' />;
+    return <Redirect to='/workspace/sleact/channel/일반' />;
   }
 
   return (

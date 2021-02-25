@@ -7,7 +7,7 @@ import useSWR from 'swr';
 import fetcher from '@utils/fetcher';
 
 const LogIn = () => {
-  const { data, error, revalidate, mutate, } = useSWR('http://localhost:3095/api/users', fetcher, {
+  const { data, revalidate, } = useSWR('http://localhost:3095/api/users', fetcher, {
     dedupingInterval: 100000,
   });
   // swr을 이용해서 로그인 여부를 확인할 수 있다. fetcher에서 리턴되는 값을 가져올 수 있다.
@@ -24,10 +24,11 @@ const LogIn = () => {
       }, {
         withCredentials: true,
       })
-      .then((response) => {
-        mutate(response.data, false);
+      .then(() => {
+        revalidate();
       })
       .catch((error) => {
+        console.dir(error);
         setLogInError(error.response?.status === 401);
       });
   }, [ email, password, ]);
@@ -37,7 +38,7 @@ const LogIn = () => {
   }
 
   if (data) {
-    return <Redirect to='/workspace/channel' />;
+    return <Redirect to='/workspace/sleact/channel/일반' />;
   }
 
   return (
